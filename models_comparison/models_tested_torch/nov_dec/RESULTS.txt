@@ -1,0 +1,12 @@
+ALL TRAINING DATA:
+ERROR:  0.030042223509616307
+Direction Errors:  441 / 1375
+Direction Accuraccy:  67.92727272727272 %
+ALL VALIDATION DATA: (fallo en gran crecida, menos que la otra por lo menos)
+ERROR:  0.08434911895752722
+Direction Errors:  97 / 328
+Direction Accuraccy:  70.42682926829268 %
+
+ERROR:  0.07771055470751057
+Direction Errors:  60 / 338
+Direction Accuraccy:  82.24852071005917 %

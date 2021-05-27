@@ -1,0 +1,98 @@
+def calculate_weighted_average(y_average):
+    counter_weighted_average = len(y_average)
+    for i in range (0,len(y_average),1):
+        weight_sum=(counter_weighted_average*(counter_weighted_average+1))/2
+        y_average[i]= (y_average[i]/(weight_sum))
+        counter_weighted_average-=1
+    return y_average
+
+def predict_based_on_weighted_average_of_predictions(shift_prediction, test_data):
+    y_average = np.zeros(NUMBER_PREDICTIONS)
+    weight_for_average_general=1
+    
+    for j in range (NUMBER_PREDICTIONS):
+        #02 Train or test data prediction
+        if(test_data):
+            xtrain = X_test[j+shift_prediction-TIME_STEPS].reshape(-1,X_test.shape[1],X_train.shape[2]) #100 values with 23 attributes
+        else:
+            xtrain = X_train[j+shift_prediction-TIME_STEPS].reshape(-1,X_train.shape[1],X_train.shape[2])
+       
+        train_predict=model.predict(xtrain)
+        
+        # 03 Results processing
+        predicted=[] #Keeps record of current prediction
+        counter = 0 
+        average_position=0 
+        counter_for_weights=weight_for_average_general
+        
+        for i in range(shift_prediction,shift_prediction+j+NUMBER_PREDICTIONS+1):
+            #If our position >= position of first prediction and our position < position of first 
+            # prediction of objective, we start counter of innner prediction and we continue adding nan
+            if (i>shift_prediction+j and i<shift_prediction+NUMBER_PREDICTIONS):
+                counter+=1
+            
+            #If our position >= position of first prediction of objective prediction, we apprend prediction
+            #to predicted list and we add prediction to global average prediction array
+            elif(i>=shift_prediction+NUMBER_PREDICTIONS):
+                predicted.append(train_predict[0,counter])
+                y_average[average_position] += train_predict[0,counter]*counter_for_weights
+                counter+=1
+                average_position+=1
+                counter_for_weights-=1
+                
+        # plt.plot(adjustForSinglePlotting(predicted), alpha=0.3)
+        weight_for_average_general+=1
+                
+    #Calculating the average of each prediction at each specific point and making an array with results
+    y_average = calculate_weighted_average(y_average)
+    return y_average
+
+def adjust_for_plotting(array_with_predictions):   
+    plotted_average = []
+    counter=0
+    for i in range(TIME_STEPS + NUMBER_PREDICTIONS + len(array_with_predictions)):
+        if (i<TIME_STEPS + NUMBER_PREDICTIONS):
+            plotted_average.append(np.nan)
+        else:
+            plotted_average.append(array_with_predictions[counter])
+            counter+=1
+    return plotted_average
+
+def accumulated_predictions(plot_extension,test_data):
+    # Process for joining the predictions in a single plot (the average of the predictions for each "sector")
+    accumulated_average=[]
+    for i in range(TIME_STEPS,plot_extension,NUMBER_PREDICTIONS):
+        plotted_average = predict_based_on_weighted_average_of_predictions(i,test_data)
+        for j in range(len(plotted_average)-NUMBER_PREDICTIONS,len(plotted_average)):
+            accumulated_average.append(plotted_average[j])
+    return accumulated_average
+#%% Execution of predictions until the selected extension, also if train or test data is used should be specified
+
+plot_extension = 5000
+test_data = True
+
+accumulated_predictions_list = accumulated_predictions(plot_extension, test_data)
+
+#%% Plot and calculate RMSE error, for training or testing data
+
+#Prepare predictions and real data for plotting
+if(test_data):
+    testD = (test_df[CLOSE]).to_numpy()
+    real_prices = testD[:plot_extension+NUMBER_PREDICTIONS]
+else:
+    real_prices = (df[CLOSE].head(plot_extension+NUMBER_PREDICTIONS)).to_numpy() 
+
+predictions_ready_to_plot = adjust_for_plotting(accumulated_predictions_list)
+
+#Error
+error = math.sqrt(mean_squared_error(real_prices[TIME_STEPS+NUMBER_PREDICTIONS:],accumulated_predictions_list))
+print ("ERROR: ",error)
+
+#Plot
+plt.plot(predictions_ready_to_plot)
+plt.plot(real_prices)
+plt.legend(['Prediction', 'Real'], loc='best')
+plt.show()
+
+#Calculate direction error
+accuraccy_up_down(accumulated_predictions_list, real_prices[TIME_STEPS+NUMBER_PREDICTIONS:])   g

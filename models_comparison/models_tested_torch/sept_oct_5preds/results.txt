@@ -1,3 +1,0 @@
-ERROR:  0.10819279450755297
-Direction Errors:  350 / 687
-Direction Accuraccy:  49.053857350800584 %

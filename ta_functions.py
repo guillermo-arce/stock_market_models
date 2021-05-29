@@ -36,15 +36,15 @@ LOW = "low"
 CLOSE = "close"
 VOLUME = "volume"
 
-#%% Technical Indicators functions (7 ta indicators)
-def add_all_ta(df):
-    df = add_trend_ta(df, HIGH, LOW, CLOSE)
-    df = add_volatility_ta(df, HIGH, LOW, CLOSE)
-    df = add_momentum_ta(df, HIGH, LOW, CLOSE, VOLUME)
-    df = add_volume_ta(df, HIGH, LOW, CLOSE, VOLUME)  
+#%% Technical Indicators functions (7 ta indicators -> Used in Pytorch's model)
+def add_reduced_ta(df):
+    df = add_reduced_trend_ta(df, HIGH, LOW, CLOSE)
+    df = add_reduced_volatility_ta(df, HIGH, LOW, CLOSE)
+    df = add_reduced_momentum_ta(df, HIGH, LOW, CLOSE, VOLUME)
+    df = add_reduced_volume_ta(df, HIGH, LOW, CLOSE, VOLUME)  
     return df
 
-def add_trend_ta(
+def add_reduced_trend_ta(
     df: pd.DataFrame,
     high: str,
     low: str,
@@ -71,7 +71,7 @@ def add_trend_ta(
 
     return df
 
-def add_volatility_ta(
+def add_reduced_volatility_ta(
     df: pd.DataFrame,
     high: str,
     low: str,
@@ -87,7 +87,7 @@ def add_volatility_ta(
     
     return df
 
-def add_momentum_ta(
+def add_reduced_momentum_ta(
     df: pd.DataFrame,
     high: str,
     low: str,
@@ -104,7 +104,7 @@ def add_momentum_ta(
     
     return df
 
-def add_volume_ta(
+def add_reduced_volume_ta(
     df: pd.DataFrame,
     high: str,
     low: str,
@@ -121,16 +121,16 @@ def add_volume_ta(
     
     return df
 
-#%% Technical Indicators functions (23 ta indicators)
+#%% Technical Indicators functions (23 ta indicators -> Used in Tensorflow's model)
 
-def add_all_ta_complex(df):
-    df = add_trend_ta_complex(df, HIGH, LOW, CLOSE)
-    df = add_volatility_ta_complex(df, HIGH, LOW, CLOSE)
-    df = add_momentum_ta_complex(df, HIGH, LOW, CLOSE, VOLUME)
-    df = add_volume_ta_complex(df, HIGH, LOW, CLOSE, VOLUME)  
+def add_all_ta(df):
+    df = add_trend_ta(df, HIGH, LOW, CLOSE)
+    df = add_volatility_ta(df, HIGH, LOW, CLOSE)
+    df = add_momentum_ta(df, HIGH, LOW, CLOSE, VOLUME)
+    df = add_volume_ta(df, HIGH, LOW, CLOSE, VOLUME)  
     return df
 
-def add_trend_ta_complex(
+def add_trend_ta(
     df: pd.DataFrame,
     high: str,
     low: str,
@@ -165,7 +165,7 @@ def add_trend_ta_complex(
 
     return df
 
-def add_volatility_ta_complex(
+def add_volatility_ta(
     df: pd.DataFrame,
     high: str,
     low: str,
@@ -193,7 +193,7 @@ def add_volatility_ta_complex(
     
     return df
 
-def add_momentum_ta_complex(
+def add_momentum_ta(
     df: pd.DataFrame,
     high: str,
     low: str,
@@ -228,7 +228,7 @@ def add_momentum_ta_complex(
     
     return df
 
-def add_volume_ta_complex(
+def add_volume_ta(
     df: pd.DataFrame,
     high: str,
     low: str,

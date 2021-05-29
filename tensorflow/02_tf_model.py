@@ -27,8 +27,8 @@ VOLUME = "volume"
 #    (1) TIME_STEPS=100 and NUMBER_PREDICTIONS=10
 #    (2) TIME_STEPS=100 and NUMBER_PREDICTIONS=1
 
-TIME_STEPS = 600        
-NUMBER_PREDICTIONS=60
+TIME_STEPS = 100        
+NUMBER_PREDICTIONS=1
 CLOSE_POSITION = 0
 
 #%% Load pre-processed data
@@ -48,7 +48,6 @@ test_df = df[int(n*0.7):]
 # So we want to transform the dataset with each row representing the historical data and the target.
 # 1 - Split into X(input) and y(output)
 # 2 - Transform data into time series format
-
 def build_timeseries(mat, y_col_index):
     
     dim_0 = mat.shape[0] - TIME_STEPS
@@ -71,7 +70,7 @@ print("y_train shape: ",y_train.shape)
 print("X_test shape: ",X_test.shape)
 print("y_test shape: ",y_test.shape)
 
-#%% Create the Stacked LSTM model and start the training
+#%% Create the Stacked LSTM model and start the training (it is preferred to load a model, this may take some days...)
 
 model = Sequential()
 model.add(LSTM(200,return_sequences=True,input_shape=(TIME_STEPS,X_train.shape[2])))
@@ -149,14 +148,18 @@ def direction_accuraccy(predictions,real):
         
 #%% Execution of predictions until the selected extension, also if train or test data is used should be specified
 
-#With current pre-processed data, plot_extension value could be until 49300 
+#With current pre-processed data, plot_extension value could be up to 49300 (for testing data) and 115200 (for training data)
 plot_extension = 3000
 test_data = True
+
+print("Making predictions, this may take a while...")
 
 if(test_data):
     predictions = make_predictions(plot_extension, X_test)
 else:
     predictions = make_predictions(plot_extension, X_train)
+
+print("Done! Please, re-scale and plot with the following code blocks")
 
 #%% Re-scale prediction
 close_scaler = joblib.load("tensorflow/close_scaler.pkl") 

@@ -22,19 +22,25 @@ VOLUME = "volume"
 #Please, change accordingly to the desired model (True for Pytorch, False for Tensorflow)
 PYTORCH_MODEL=True
 
-DATA_SOURCE = "dataset.csv"
+#Depending on the model to use, we have to choose the data to pre-process:
+# TF -> dataset.csv
+# PT (sept_oct) -> sept_oct/dataset.csv
+# PT (oct_nov) -> oct_nov/dataset.csv
+# PT (nov_dec) -> nov_dec/dataset.csv
+DATA_SOURCE = "nov_dec/dataset.csv"
 
 #%% Basic data preprocessing
 
 print("Preprocessing data ("+DATA_SOURCE+"), please wait...")
 
 if(PYTORCH_MODEL):
-    directory = "pytorch"
+    directory = "pytorch" 
+    subdirectory = DATA_SOURCE.split("/",1)[0]
 else:
     directory = "tensorflow"
 
 # Loading in the df
-df = pd.read_csv(DATA_SOURCE)
+df = pd.read_csv("data/"+DATA_SOURCE)
 
 # Convert "time" column to DateTime dftype
 df[TIME]= pd.to_datetime(df[TIME], errors='coerce') 
@@ -61,7 +67,10 @@ print("Technical indicators and data smoothing...✓")
 # Scale fitting the close prices separately for inverse_transformations purposes later
 close_scaler = RobustScaler()
 close_scaler.fit(df[["close_sma"]])
-joblib.dump(close_scaler, directory+'/close_scaler.pkl') 
+if(PYTORCH_MODEL):
+    joblib.dump(close_scaler, directory+"/close_scaler_"+subdirectory+".pkl") 
+else:
+    joblib.dump(close_scaler, directory+"/close_scaler.pkl") 
 
 # Normalizing/Scaling the DF
 scaler = RobustScaler()
@@ -69,9 +78,12 @@ df = pd.DataFrame(scaler.fit_transform(df), columns=df.columns, index=df.index)
 
 print("Scaling...✓")
 
-#%% Export dataset 
+#%% Export dataset and remove the first 50 elements (due to the lag of some technical indicators)
 
-(df.drop(df.index[:50])).to_csv(directory+"/data_preprocessed.csv")
+if(PYTORCH_MODEL):
+    (df.drop(df.index[:50])).to_csv(directory+"/data_preprocessed_"+subdirectory+".csv")
+else:
+    (df.drop(df.index[:50])).to_csv(directory+"/data_preprocessed.csv")
 
 print("Converting to csv...✓")  
 

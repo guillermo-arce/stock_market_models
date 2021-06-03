@@ -27,7 +27,7 @@ PYTORCH_MODEL=True
 # PT (sept_oct) -> sept_oct/dataset.csv
 # PT (oct_nov) -> oct_nov/dataset.csv
 # PT (nov_dec) -> nov_dec/dataset.csv
-DATA_SOURCE = "nov_dec/dataset.csv"
+DATA_SOURCE = "sept_oct/dataset.csv"
 
 #%% Basic data preprocessing
 

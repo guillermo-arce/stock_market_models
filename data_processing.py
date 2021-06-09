@@ -20,14 +20,14 @@ CLOSE = "close"
 VOLUME = "volume"
 
 #Please, change accordingly to the desired model (True for Pytorch, False for Tensorflow)
-PYTORCH_MODEL=True
+PYTORCH_MODEL=False
 
 #Depending on the model to use, we have to choose the data to pre-process:
-# TF -> dataset.csv
-# PT (sept_oct) -> sept_oct/dataset.csv
-# PT (oct_nov) -> oct_nov/dataset.csv
-# PT (nov_dec) -> nov_dec/dataset.csv
-DATA_SOURCE = "nov_dec/dataset.csv"
+# TensorFlow -> dataset.csv
+# PyTorch (sept_oct) -> sept_oct/dataset.csv
+# PyTorch (oct_nov) -> oct_nov/dataset.csv
+# PyTorch (nov_dec) -> nov_dec/dataset.csv
+DATA_SOURCE = "dataset.csv"
 
 #%% Basic data preprocessing
 

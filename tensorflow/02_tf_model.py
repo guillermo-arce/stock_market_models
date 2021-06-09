@@ -16,12 +16,7 @@ import joblib
 
 #%% Constants definition
 
-TIME = "time"
-OPEN = "open"
-HIGH = "high"
-LOW = "low"
 CLOSE = "close_sma"
-VOLUME = "volume"
 
 #Already trained models support these combinations:
 #    (1) TIME_STEPS=100 and NUMBER_PREDICTIONS=10

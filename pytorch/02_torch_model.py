@@ -14,12 +14,7 @@ from sklearn.metrics import mean_squared_error
 
 # %% Constants definition
 
-TIME = "time"
-OPEN = "open"
-HIGH = "high"
-LOW = "low"
 CLOSE = "close_sma"
-VOLUME = "volume"
 
 TIME_STEPS = 100
 NUMBER_PREDICTIONS = 1
@@ -105,7 +100,7 @@ class LSTM(nn.Module):
         
         output, (h_n, c_n) = self.lstm(x, (h_0, c_0))
         
-        #Last time steps 
+        #Linear layer process the last time-step data
         output = self.fc(output[:, -1, :]) 
         
         return output
@@ -171,7 +166,7 @@ torch.save(model.state_dict(), "model.pth")
 np.savetxt("validation.csv", val, delimiter=",")
 np.savetxt("loss.csv", hist, delimiter=",")
 
-#%%Load a model, if desired 
+#%%Load a model, if desired (remember to create it first, with the block starting in line 74)
 
 model.load_state_dict(torch.load("pytorch/trained_models/"+MODEL+"/model.pth"))
 model.eval()
@@ -233,12 +228,12 @@ def direction_accuraccy(predictions,real):
     
 #%% Execution of predictions until the selected extension, also if train or test data is used should be specified
 
-#With current pre-processed data, plot_extension value could be up to:
+#With current pre-processed data, plot_extension value could be up to (be careful with the RAM, I recommend using smaller values, like 1000):
     # For dataset sept_oct: 3430 (for test data) and 14040 (for train data) 
     # For dataset oct_nov: 3690 (for test data) and 15080 (for train data)
     # For dataset nov_dec: 3380 (for test data) and 13850 (for train data)
 
-plot_extension = 3430
+plot_extension = 500
 test_data = True
 
 print("Making predictions, this may take a while...")
